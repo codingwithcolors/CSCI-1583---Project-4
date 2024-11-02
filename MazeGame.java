@@ -7,7 +7,9 @@ public class MazeGame{
 		//Start game algorithm
 		public static void start(){
 			gameOver = false;
+			level = 0;
 			World.start();
+			Scene.start(level);
 		}
 
 		public static void update(){
@@ -15,7 +17,8 @@ public class MazeGame{
 		}
 
 		public static void render(){
-
+			Scene.draw();
+			StdDraw.show(100);
 		}
 
 		public static void main(String[] args){
@@ -28,4 +31,5 @@ public class MazeGame{
 
 		}
 
+		public static int level;
 }

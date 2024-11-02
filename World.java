@@ -5,28 +5,38 @@ import java.util.Scanner;
 
 public class World{
 
+	private static String[][][] levels;
+
 	public static void start(){
 		//Get all the map data and save it for later
 		Scanner input = new Scanner(System.in);
 		int count = input.nextInt();
+
+		levels = new String[count][][];
+
 		for (int lvl = 0; lvl < count; lvl++)
 			{
 				int rows = input.nextInt();
 				int cols = input.nextInt();
-				setLevel(rows, cols, input);
+				setLevel(lvl, rows, cols, input);
 			}
 	}
 
-	public static void setLevel(int rows, int cols, Scanner input){
+	public static void setLevel(int lvl, int rows, int cols, Scanner input){
+		levels[lvl] = new String[rows][cols];
 		for (int y = 0; y < rows; y++)
 			{
 				for (int x = 0; x < cols; x++)
 					{
 						String tile = input.next();
-						System.out.print(tile);
+						levels[lvl][y][x] = tile;
 					}
-				System.out.print("\n");
 			}
 	}
+
+	public static String[][] getLevel(int level){
+		return levels[level];
+	}
+
 
 }

@@ -21,4 +21,28 @@ public class Player{
 			int tileY = y * TILE_SIZE + TILE_SIZE/2;
 			StdDraw.picture(tileX, tileY, image);
 		}
+
+	public static void update()
+		{
+			if (StdDraw.hasNextKeyTyped() == true)
+				{
+					char key = StdDraw.nextKeyTyped();
+					if (key == 'w')
+						{
+							y--;
+						}
+					else if (key == 's')
+						{
+							y++;
+						}
+					else if (key == 'a')
+						{
+							x--;
+						}
+					else if (key == 'd')
+						{
+							x++;
+						}
+				}
+		}
 }

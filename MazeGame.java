@@ -13,7 +13,7 @@ public class MazeGame{
 		}
 
 		public static void update(){
-
+			Player.update();
 		}
 
 		public static void render(){

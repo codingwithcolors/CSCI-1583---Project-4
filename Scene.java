@@ -2,14 +2,26 @@
 //Project 4: Maze Game - Scene
 
 public class Scene{
+private static final int TILE_SIZE = 32;
+
 	private static int rows;
 	private static int cols;
 	private static boolean[][] walls;
+	private static int width;
+	private static int height;
+	private static String floorImage;
+	private static String wallImage;
 
 	 public static void start(int level){
+	 	floorImage = "Assets/tile-passage.png";
+	 	wallImage = "Assets/tile-brickwall.png";
+
 	 	String[][] map = World.getLevel(level);
 	 	rows = map.length;
 	 	cols = map[0].length;
+
+	 	width = cols * TILE_SIZE;
+	 	height = rows * TILE_SIZE;
 
 	 	walls = new boolean[rows][cols];
 	 	for (int y = 0; y < rows; y++)
@@ -20,12 +32,21 @@ public class Scene{
 	 					setTile(x, y, tile);
 	 				}
 	 		}
+
+	 	//Setup canvas data (tile & scale)
+	 	StdDraw.setCanvasSize(width, height);
+	 	StdDraw.setXscale(0.0, width);
+	 	StdDraw.setYscale(height, 0.0);
 	 }
 
 	 public static void setTile(int x, int y, String tile){
 	 	if (tile.equals("#") ){
 	 		walls[y][x] = true;
 	 	}
+	 	else if (tile.equals("@"))
+	 		{
+	 			Player.start(x, y);
+	 		}
 	 }
 
 	 public static void draw(){
@@ -33,9 +54,18 @@ public class Scene{
 	 		{
 	 			for (int x = 0; x < cols; x++)
 	 				{
-	 					System.out.printf("%Ss ", walls[y][x] );
+	 					int tileX = x * TILE_SIZE + TILE_SIZE/2;
+	 					int tileY = y * TILE_SIZE + TILE_SIZE/2;
+
+	 					if (walls[y][x] == true)
+	 						{
+	 							StdDraw.picture(tileX, tileY, wallImage);
+	 						}
+	 					else
+	 						{
+	 							StdDraw.picture(tileX, tileY, floorImage);
+	 						}
 	 				}
-	 			System.out.print("\n");
 	 		}
 	 }
 }

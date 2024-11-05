@@ -18,6 +18,7 @@ public class MazeGame{
 
 		public static void render(){
 			Scene.draw();
+			Player.draw();
 			StdDraw.show(100);
 		}
 

@@ -6,8 +6,7 @@ Group project for Project 4 - Maze Game
 New feature key added
 1. Player is unable to advance to the next level on the exit tile without the key
 2. Key will reconfigurate until it is not overlapping any other object (see debug terminal on line 93 - 106 for logic)
-
-Need to figure out StdDraw text :((((
+3. Pop up messages occur for key pickup, level advancement, and locked door logic. Majority of the changes are within Scene.java.
 
 11.5.24 Summary (Dom):
 

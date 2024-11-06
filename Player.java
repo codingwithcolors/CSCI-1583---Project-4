@@ -27,19 +27,19 @@ public class Player{
 			if (StdDraw.hasNextKeyTyped() == true)
 				{
 					char key = StdDraw.nextKeyTyped();
-					if (key == 'w')
+					if (key == 'w' && Scene.canMove(x,y-1))
 						{
 							y--;
 						}
-					else if (key == 's')
+					else if (key == 's' && Scene.canMove(x,y+1))
 						{
 							y++;
 						}
-					else if (key == 'a')
+					else if (key == 'a' && Scene.canMove(x-1,y))
 						{
 							x--;
 						}
-					else if (key == 'd')
+					else if (key == 'd' && Scene.canMove(x+1,y))
 						{
 							x++;
 						}

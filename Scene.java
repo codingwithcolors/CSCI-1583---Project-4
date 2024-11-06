@@ -1,4 +1,4 @@
-//Amber and Dom Ketchens
+//Amber Williams and Dom Ketchens
 //Project 4: Maze Game - Scene
 
 public class Scene {
@@ -15,33 +15,16 @@ public class Scene {
     private static int keyY = -1; //Add key off grid
     private static String keyImage;
     private static boolean keyPickup = false; //Set key pickup to be false to prepare for later player interaction
+    private static boolean showKeyMessage = false;
+    private static boolean showExitMessage = false;
+    private static boolean showLevelMessage = false; //Set pop up messages to be false to prepare for later conditions to be true
+    private static long keyMessageStartTime = 0;
+    private static long exitMessageStartTime = 0;
+    private static long levelMessageStartTime = 0; //Set timer for popup messages to initially be 0
 
-    public static void keyLogic(int level)
-    	{
-	    	StdDraw.setPenColor(StdDraw.WHITE); //Setup text color for all message pop ups for keyLogic
-			//Check Key Pickup
-			if (Player.getX() == keyX && Player.getY() == keyY && keyPickup == false) //Checking if keyPickup is set to false and moving the key off the grid completely prevents anymore interactions once the key has been picked up by the player
-			{
-				keyPickup = true;
-				keyX = cols + 1; //Put the key off the grid
-				keyY = rows + 1; //Put the key off the grid
-				StdDraw.textLeft(10.0, 20.0, "Picked up the key. Hurry to the exit!");
-			}
+    //Duration for each message
+    private static final int MESSAGE_DURATION_SECONDS = 3; //Set timer for all messages to be 5 seconds
 
-
-		//Lock the door if the player doesn't have a key
-		if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY()) //note exit naming may not be accurate due to having to change for the file
-			{
-				if (keyPickup == false) //Prevent the player from advancing until keyPickup is true
-					{
-						StdDraw.textLeft(10.0, 20.0, "The door is locked. Find a key.");
-					}
-				else //Player moves onto the next level
-					{
-						StdDraw.textLeft(10.0, 20.0, "You made it to the next level. Keep going!");
-	  				}
-	  		}
-	  	}
 
     public static void start(int level) {
         floorImage = "Spooky Assets/tile-passage.png";
@@ -112,6 +95,35 @@ public class Scene {
 			return keyPickup;
 		}
 
+    public static void keyLogic(int level)
+    	{
+			//Check Key Pickup
+			if (Player.getX() == keyX && Player.getY() == keyY && keyPickup == false) //Checking if keyPickup is set to false and moving the key off the grid completely prevents anymore interactions once the key has been picked up by the player
+			{
+				keyPickup = true;
+				keyX = cols + 1; //Put the key off the grid
+				keyY = rows + 1; //Put the key off the grid
+				showKeyMessage = true;
+				keyMessageStartTime = System.currentTimeMillis() / 1000; //Set start time for the key pop up message
+			}
+
+
+		//Lock the door if the player doesn't have a key
+		if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY()) //note exit naming may not be accurate due to having to change for the file
+			{
+				if (keyPickup == false) //Prevent the player from advancing until keyPickup is true
+					{
+						showExitMessage = true;
+						exitMessageStartTime = System.currentTimeMillis() / 1000; //Set start time for the exit pop up message
+					}
+				else
+					{
+						showLevelMessage = true;
+						levelMessageStartTime = System.currentTimeMillis() / 1000; //Set start time for the level progression pop up message
+					}
+	  		}
+	  	}
+
     public static void setTile(int x, int y, String tile) {
         if (tile.equals("#")) {
             walls[y][x] = true;
@@ -142,8 +154,41 @@ public class Scene {
     		int keyTileX = keyX * TILE_SIZE + TILE_SIZE/2;
     		int keyTileY = keyY * TILE_SIZE + TILE_SIZE/2;
     		StdDraw.picture(keyTileX, keyTileY, keyImage);
-    	}
-    }
+   		}
+
+   	//Setup text color for all messages
+	StdDraw.setPenColor(StdDraw.WHITE);
+
+	//Check current time for message duration (in milliseconds because seconds isn't built into Java because Java hates me)
+	long currentTime = System.currentTimeMillis() / 1000;
+
+	//Popup message if player picks up key
+	if (showKeyMessage && (currentTime - keyMessageStartTime < MESSAGE_DURATION_SECONDS))
+		{
+			StdDraw.textLeft(10.0, 20.0, "Picked up the key. Hurry to the exit!");
+		}
+	else
+		{
+			showKeyMessage = false; //Reset key popup message once the duration is over
+		}
+
+	if (showExitMessage && (currentTime - exitMessageStartTime < MESSAGE_DURATION_SECONDS))
+		{
+			StdDraw.textLeft(10.0, 20.0, "The door is locked. Find a key.");
+		}
+	else
+		{
+			showExitMessage = false; //Reset exit popup message once the duration is over
+		}
+	if (showLevelMessage && (currentTime - levelMessageStartTime < MESSAGE_DURATION_SECONDS))
+		{
+			StdDraw.textLeft(10.0, 20.0, "You made it to the next level. Keep going!");
+		}
+	else
+		{
+			showLevelMessage = false; //Reset level popup message once the duration is over
+		}
+	}
 
     public static boolean canMove(int x, int y) {
         return !walls[y][x];

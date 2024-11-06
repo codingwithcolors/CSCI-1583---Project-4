@@ -1,4 +1,4 @@
-// Amber and Dom Ketchens
+// Amber Williams and Dom Ketchens
 // Project 4: Maze Game - Exit
 
 public class Exit {

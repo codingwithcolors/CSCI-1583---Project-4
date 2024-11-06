@@ -6,6 +6,9 @@ public class Player {
     private static int x;
     private static int y;
     private static String image;
+    private static int foodCounter;
+    private static int foodX;
+    private static int foodY;
 
     // Start player data
     public static void start(int x, int y) {
@@ -21,16 +24,21 @@ public class Player {
     }
 
     public static void update() {
+        foodCounter = 100; //Set player hunger to 100 and decrease with player movement
         if (StdDraw.hasNextKeyTyped() == true) {
             char key = StdDraw.nextKeyTyped();
             if (key == 'w' && Scene.canMove(x, y - 1)) {
                 y--; // Move up
+                foodCounter--;
             } else if (key == 's' && Scene.canMove(x, y + 1)) {
                 y++; // Move down
+                foodCounter--;
             } else if (key == 'a' && Scene.canMove(x - 1, y)) {
                 x--; // Move left
+                foodCounter--;
             } else if (key == 'd' && Scene.canMove(x + 1, y)) {
                 x++; // Move right
+                foodCounter--;
             }
         }
     }

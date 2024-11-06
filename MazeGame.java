@@ -14,6 +14,15 @@ public class MazeGame{
 
         public static void update(){
             Player.update();
+            if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY()) {
+                level++;
+                if (level == World.getLength()) {
+                    gameOver = true;
+                }
+                else {
+                    Scene.start(level);
+                }
+            }
         }
 
         public static void render(){

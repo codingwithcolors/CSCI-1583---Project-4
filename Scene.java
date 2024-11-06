@@ -42,6 +42,8 @@ public class Scene {
             walls[y][x] = true;
         } else if (tile.equals("@")) {
             Player.start(x, y);
+        } else if (tile.equals("!")) {
+            Exit.start(x,y);
         }
     }
 

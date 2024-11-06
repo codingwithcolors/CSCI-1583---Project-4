@@ -1,3 +1,6 @@
+//Amber and Dom Ketchens
+//Project 4: Maze Game - Player
+
 public class Player {
     public static final int TILE_SIZE = 32;
     private static int x;

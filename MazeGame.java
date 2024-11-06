@@ -2,35 +2,36 @@
 //Project 4: Maze Game
 
 public class MazeGame{
-	private static boolean gameOver;
+    private static boolean gameOver;
 
-		//Start game algorithm
-		public static void start(){
-			gameOver = false;
-			level = 0;
-			World.start();
-			Scene.start(level);
-		}
+        //Start game algorithm
+        public static void start(){
+            gameOver = false;
+            level = 0;
+            World.start();
+            Scene.start(level);
+        }
 
-		public static void update(){
-			Player.update();
-		}
+        public static void update(){
+            Player.update();
+        }
 
-		public static void render(){
-			Scene.draw();
-			Player.draw();
-			StdDraw.show(100);
-		}
+        public static void render(){
+            Scene.draw();
+            Exit.draw();
+            Player.draw();
+            StdDraw.show(100);
+        }
 
-		public static void main(String[] args){
-			start();
-			while (gameOver == false)
-				{
-					update();
-					render();
-				}
+        public static void main(String[] args){
+            start();
+            while (gameOver == false)
+                {
+                    update();
+                    render();
+                }
 
-		}
+        }
 
-		public static int level;
+        public static int level;
 }

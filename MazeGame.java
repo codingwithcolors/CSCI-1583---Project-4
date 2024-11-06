@@ -14,7 +14,8 @@ public class MazeGame{
 
         public static void update(){
             Player.update();
-            if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY()) {
+            Scene.keyLogic(level); //Pass keyLogic
+            if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY() && Scene.hasKey()) {
                 level++;
                 if (level == World.getLength()) {
                     gameOver = true;

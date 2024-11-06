@@ -11,7 +11,7 @@ public class Player {
     public static void start(int x, int y) {
         Player.x = x;
         Player.y = y;
-        image = "Assets/character-chicken.png";
+        image = "Spooky Assets/player-front-idle.png";
     }
 
     public static void draw() {

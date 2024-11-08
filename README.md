@@ -1,6 +1,12 @@
 # CSCI-1583---Project-4
 Group project for Project 4 - Maze Game
 
+11.8.24 Summary:
+1. Timer added to top left.
+2. Popup text relocated towards bottom of the screen.
+3. Gems / jack-o-lanterns can be picked up. The player now must have both the key and the jack-o-lantern to advance in the game.
+4. foodCounter is partially implemented. Tiles are changed and player movement reduces the foodCounter. However, this feature is still unfinished. Will work on it more over the weekend to wrap up foodcounter timer, game losing condition, and adding food to the levels.
+
 11.6.24 Summary:
 
 New feature key added

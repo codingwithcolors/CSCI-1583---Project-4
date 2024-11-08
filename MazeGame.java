@@ -14,8 +14,8 @@ public class MazeGame{
 
         public static void update(){
             Player.update();
-            Scene.keyLogic(level); //Pass keyLogic
-            if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY() && Scene.hasKey()) {
+            Scene.pickupLogic(level); //Pass logic for key and gem
+            if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY() && Scene.hasKey() && Scene.hasGem()) {
             	System.out.println("Current level: " + level); //Debug message to ensure player is on the right level
                 level++;
                 System.out.println("Player advanced to level: " + level); //Debug message for level type
@@ -46,4 +46,10 @@ public class MazeGame{
         }
 
         public static int level;
+
+    //Allow for more game over methods to be referenced
+    public static void setGameOver(boolean status)
+    	{
+    		gameOver = status;
+    	}
 }

@@ -1,5 +1,5 @@
-//Amber Williams and Dom Ketchens
-//Project 4: Maze Game
+//Amber and Dom Ketchens
+//Project 4: MazeGame
 
 public class MazeGame{
     private static boolean gameOver;
@@ -10,15 +10,18 @@ public class MazeGame{
             level = 0;
             World.start();
             Scene.start(level);
+            Player.start(1,1);
+            Ghost.start(5,5);
         }
 
         public static void update(){
             Player.update();
-            Scene.keyLogic(level); //Pass keyLogic
+            Ghost.update();
+            Scene.keyLogic(level); // Pass keyLogic
             if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY() && Scene.hasKey()) {
-            	System.out.println("Current level: " + level); //Debug message to ensure player is on the right level
+                System.out.println("Current level: " + level);
                 level++;
-                System.out.println("Player advanced to level: " + level); //Debug message for level type
+                System.out.println("Player advanced to level: " + level);
                 if (level == World.getLength()) {
                     gameOver = true;
                 }
@@ -26,12 +29,17 @@ public class MazeGame{
                     Scene.start(level);
                 }
             }
+            // checks if ghost catches player
+            if (Player.getX() == Ghost.getX() && Player.getY() == Ghost.getY()) {
+                gameOver = true; // ends the game if true
+            }
         }
 
         public static void render(){
-            Scene.draw();
-            Exit.draw();
-            Player.draw();
+            Scene.draw(); // draw scene
+            Exit.draw(); // draw exit
+            Player.draw(); // draw player
+            Ghost.draw(); // draw ghost
             StdDraw.show(100);
         }
 

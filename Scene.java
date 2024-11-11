@@ -7,7 +7,8 @@ public class Scene {
     private static int rows;
     private static int cols;
     private static boolean[][] walls;
-    private static boolean[][] hungerTiles;
+    private static boolean[][] hungerTiles; = new int[MAX_HUNGER_TILES][2];
+    private static int hungerTileCount; //Update for each level
     private static int width;
     private static int height;
     private static String floorImage;
@@ -53,6 +54,7 @@ public class Scene {
         keyPickup = false; //Reset key pickup for each new level
         gemPickup = false; //Reset gem pickup for each new level
         foodCounter = 50; //Reset food counter for each new level
+        setHungerTileCount(level);
 
         String[][] map = World.getLevel(level);
         rows = map.length;
@@ -129,6 +131,28 @@ public class Scene {
     }	while (withinBounds == false || overWall || overExit);
 	}
 
+	//Set hunger tiles for each level
+	private static void setHungerTileCount(int level)
+		{
+			switch (level)
+				{
+					case 1:
+						hungerTileCount = 4;
+						break;
+					case 2:
+						hungerTileCount = 10;
+						break;
+					case 3:
+						hungerTileCount = 16;
+						break;
+					case 4:
+						hungerTileCount = 22;
+						break;
+					default:
+						hungerTileCount = 1;
+				}
+		}
+
 	//Check if the player has the key for MazeGame.java to check
 	public static boolean hasKey()
 		{
@@ -203,8 +227,6 @@ public class Scene {
                 }
             }
         }
-
-    //Draw the food counter in the top right corner
 
     //Draw the key in the level
     if (keyPickup == false)

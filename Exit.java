@@ -10,7 +10,7 @@ public class Exit {
     public static void start(int x, int y) {
         Exit.x = x;
         Exit.y = y;
-        image = "Spooky Assets/tile-exit.png";
+        image = "Assets/tile-exit.png";
     }
 
     public static void draw() {

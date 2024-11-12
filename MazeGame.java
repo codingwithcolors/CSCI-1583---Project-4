@@ -1,8 +1,14 @@
-//Amber and Dom Ketchens
+//Amber Williams and Dom Ketchens
 //Project 4: Maze Game
+
+import java.util.ArrayList;
 
 public class MazeGame{
     private static boolean gameOver; // checks if game's over
+    private static Music backgroundMusic; //Play background music
+    private static Music levelExit; // Play sfx for exiting a level
+    private static ArrayList<Bullet> bullets = new ArrayList<>();
+    private static ArrayList<Ghost> ghosts = new ArrayList<>();
 
         //Start game algorithm
         public static void start(){
@@ -13,20 +19,29 @@ public class MazeGame{
             // starting player positions
             Player.start(1,1);
             Ghost.start(5,5);
+
+        //Initialize and play background music
+        backgroundMusic = new Music("Assets/background-music.wav");
+        backgroundMusic.playLoop();
+
+        //Play sfx with level advancement
+        levelExit = new Music("Assets/level-exit-sfx.wav");
         }
 
-        // update game logic
+        //Update game logic
         public static void update(){
             Player.update(); // update player position
+            Player.updateBullets(ghosts); //updates bullets
             Ghost.update(); // update ghost position
-            Scene.keyLogic(level); // Pass keyLogic
+            Scene.pickupLogic(level); //Pass logic for key and gem
+            Scene.foodCounterCheck(); //Pass foodcounter logic
 
             // check if player reaches exit and has the key
-            if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY() && Scene.hasKey()) {
-                System.out.println("Current level: " + level);
-                level++; // increment level
-                System.out.println("Player advanced to level: " + level);
-
+            if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY() && Scene.hasKey() && Scene.hasGem()) {
+            	System.out.println("Current level: " + level); //Debug message to ensure player is on the right level
+                level++;
+                System.out.println("Player advanced to level: " + level); //Debug message for level type
+                levelExit.play();
                 // if player reached the last last, end the game
                 if (level == World.getLength()) {
                     gameOver = true;
@@ -38,6 +53,14 @@ public class MazeGame{
             // checks if ghost catches player
             if (Player.getX() == Ghost.getX() && Player.getY() == Ghost.getY()) {
                 gameOver = true; // ends the game if true
+                StdDraw.setPenColor(StdDraw.WHITE);
+                StdDraw.textLeft(10.0, 20.0, "Game Over! The ghost caught you.");
+            }
+            //Check if food counter is 0
+            if (Player.getFoodCounter() <= 0){
+                StdDraw.setPenColor(StdDraw.WHITE);
+                StdDraw.textLeft(10.0, 20.0, "Game Over! You ran out of food.");
+                gameOver = true;
             }
         }
 
@@ -47,6 +70,7 @@ public class MazeGame{
             Exit.draw(); // draw exit
             Player.draw(); // draw player
             Ghost.draw(); // draw ghost
+            Player.drawBullets(); //draw bullets
             StdDraw.show(100);
         }
 
@@ -59,7 +83,19 @@ public class MazeGame{
                     render(); // renders updated game
                 }
 
+        //Stop the background music when the game ends
+        if (backgroundMusic != null)
+            {
+                backgroundMusic.stop();
+            }
+
         }
 
         public static int level; // current game level
+
+    //Allow for more game over methods to be referenced
+    public static void setGameOver(boolean status)
+    	{
+    		gameOver = status;
+    	}
 }

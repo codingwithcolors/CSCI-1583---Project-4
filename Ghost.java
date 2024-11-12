@@ -7,6 +7,16 @@ public class Ghost {
     private static int x;
     private static int y;
     private static String image;
+    private boolean isHexed = false;
+
+    public void hex(){
+        isHexed = true;
+        this.image = "Assets/ghost-hexxed.png";
+    }
+
+    public boolean isHexed(){
+        return isHexed;
+    }
 
     // speed of the ghost (how many tiles it moves per update)
     private static final int SPEED = 1;
@@ -96,4 +106,13 @@ public class Ghost {
                 break;
         }
     }
+
+    public static int getX()
+        {
+            return x;
+        }
+    public static int getY()
+        {
+            return y;
+        }
 }

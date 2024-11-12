@@ -48,7 +48,7 @@ public class Player {
             } else if (key == 'a' && Scene.canMove(x - 1, y)) {
                 x--; moved = true;// 'a' Move left
                 foodCounter--;
-                image = "Assets/player-left-1.png";
+                image = "Assets/player-left-idle.png";
             } else if (key == 'd' && Scene.canMove(x + 1, y)) {
                 x++; moved = true;// 'd' Move right
                 foodCounter--;

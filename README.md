@@ -1,6 +1,19 @@
 # CSCI-1583---Project-4
 Group project for Project 4 - Maze Game
 
+11.12.24
+Code updates needed
+1. Make hexxed ghost work
+2. Make the bullet in the right direction
+3. Update text orientation
+
+Record videos
+1. All scenarios
+
+Major points
+1. Features and general overview
+
+
 11.8.24 Summary:
 1. Timer added to top left.
 2. Popup text relocated towards bottom of the screen.

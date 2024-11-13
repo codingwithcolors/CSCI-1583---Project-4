@@ -12,7 +12,7 @@ public class Player {
     private static String image;
 
     // players food/health counter
-    private static int foodCounter = 100; // Set initial food counter to 100
+    private static int foodCounter = 300; // Set initial food counter to 100
     private static boolean playerMoved = false; // tracks if player moved
 
     // players starting position & image
@@ -21,6 +21,9 @@ public class Player {
         Player.y = y;
         image = "Assets/player-front-idle.png";
     }
+
+    //SFX
+    private static Music bulletSFX; //Play sfx for bullets
 
     // Bullet
     private static ArrayList<Bullet> bullets = new ArrayList<>(); // Array list object, stored dynamically
@@ -35,6 +38,8 @@ public class Player {
 
     // Updates player's position/image based on input
     public static void update() {
+        bulletSFX = new Music("Assets/bullet-sfx.wav");
+
         boolean moved = false; // Checks if player moved
         if (StdDraw.hasNextKeyTyped()) {
             char key = StdDraw.nextKeyTyped();
@@ -55,6 +60,7 @@ public class Player {
             } else if (key == ' ') { // Press spacebar to shoot bullet
                 Bullet newBullet = new Bullet(x, y, directionFacing);
                 bullets.add(newBullet);
+                bulletSFX.play();
             }
         }
 

@@ -18,7 +18,7 @@ public class MazeGame{
             Scene.start(level);
             // starting player positions
             Player.start(1,1);
-            Ghost.start(5,5);
+            Ghost.startRandom();
 
         //Initialize and play background music
         backgroundMusic = new Music("Assets/background-music.wav");
@@ -48,18 +48,15 @@ public class MazeGame{
                 }
                 else {
                     Scene.start(level); // start new level scene
+                    Ghost.startRandom(); //please work for once in your life ghost i am begging you whyyyy
                 }
             }
             // checks if ghost catches player
             if (Player.getX() == Ghost.getX() && Player.getY() == Ghost.getY()) {
                 gameOver = true; // ends the game if true
-                StdDraw.setPenColor(StdDraw.WHITE);
-                StdDraw.textLeft(10.0, 20.0, "Game Over! The ghost caught you.");
             }
             //Check if food counter is 0
             if (Player.getFoodCounter() <= 0){
-                StdDraw.setPenColor(StdDraw.WHITE);
-                StdDraw.textLeft(10.0, 20.0, "Game Over! You ran out of food.");
                 gameOver = true;
             }
         }

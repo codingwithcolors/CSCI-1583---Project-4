@@ -9,6 +9,10 @@ public class Ghost {
     private static String image;
     private boolean isHexed = false;
 
+    // speed of the ghost (how many tiles it moves per update)
+    private static final int SPEED = 1;
+    private static Random rand = new Random(); // creates a random number generator
+
     public void hex(){
         isHexed = true;
         this.image = "Assets/ghost-hexxed.png";
@@ -18,17 +22,19 @@ public class Ghost {
         return isHexed;
     }
 
-    // speed of the ghost (how many tiles it moves per update)
-    private static final int SPEED = 1;
-
-    // random object for direction changes
-    private static Random rand = new Random(); // creates a random number generator
-
     // start the ghost at a specific position
-    public static void start(int startX, int startY) {
-        x = 8; // Default x position
-        y = 6; // Default y position
+    public static void startRandom() {
         image = "Assets/Ghost.png"; // Set the image of the ghost
+
+        //Get the maze dimensions for each level and pick a random coordinate
+        int cols = Scene.getCols();
+        int rows = Scene.getRows();
+
+        //Find a random position that doesn't overlap the walls
+        do {
+            x = rand.nextInt(cols); // Random x position
+            y = rand.nextInt(rows); // Random y position
+       } while (x == Player.getX() && y == Player.getY() || !Scene.canMove(x, y));
     }
 
     // draw the ghost at its current position

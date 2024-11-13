@@ -6,7 +6,6 @@ public class Scene {
     private static int rows;
     private static int cols;
     private static boolean[][] walls;
-    private static int hungerTileCount; //Update for each level
     private static int width;
     private static int height;
     private static String floorImage;
@@ -25,6 +24,8 @@ public class Scene {
     private static int gemY = -1; //Add jack o lantern off grid
     private static boolean gemPickup = false; //Set gem pickup to be false
     //PopUp Messages
+    private static double popupTextX;
+    private static double popupTextY;
     private static boolean showKeyMessage = false;
     private static boolean showExitMessage = false;
     private static boolean showGemMessage = false;
@@ -38,8 +39,9 @@ public class Scene {
     private static final int TIMER_DURATION = 90; //Can change duration later for game balance
     //Duration for each popup message
     private static final int MESSAGE_DURATION_SECONDS = 2; //Set timer for all messages to be 5 seconds
-    //Music
+    //Music & SFX
     private static Music pickupSound; //Play sfx for pickup
+
 
     public static void start(int level) {
         floorImage = "Assets/tile-passage.png";
@@ -59,6 +61,24 @@ public class Scene {
 
         width = cols * TILE_SIZE;
         height = rows * TILE_SIZE;
+
+        //Popup text that changes for each level
+		StdDraw.setPenColor(StdDraw.WHITE);
+		//Set popup text dimensions for each level
+		if (level == 0)
+			{
+				popupTextX = width * 0.01;
+				popupTextY = height * 0.96;
+		} else if (level == 1){
+				popupTextX = width * 0.01;
+				popupTextY = height * 0.96;
+		} else if (level == 2){
+				popupTextX = width * 0.01;
+				popupTextY = height * 0.98;
+		} else if (level == 3){
+				popupTextX = width * 0.01;
+				popupTextY = height * 0.98;
+	}
 
         walls = new boolean[rows][cols];
         for (int y = 0; y < rows; y++) {
@@ -266,12 +286,8 @@ public class Scene {
    			StdDraw.picture(foodTileX, foodTileY, foodImage);
    		}
 
-   	//Setup text color for all messages
+   	//Setup text color for all key and gem messages
 	StdDraw.setPenColor(StdDraw.WHITE);
-
-	//Set popup text dimensions for each level
-	double popupTextX = width * 0.01;
-	double popupTextY = height * 0.95;
 
 	//Check current time for message duration (in milliseconds because seconds isn't built into Java because Java hates me)
 	long currentTime = System.currentTimeMillis() / 1000;
@@ -339,7 +355,7 @@ public class Scene {
 			showLevelMessage = false; //Reset level popup message once the duration is over
 		}
 	//Message for the food counter
-		StdDraw.textLeft(10.0, height - 20.0, "Food: " + Player.getFoodCounter());
+		StdDraw.textLeft(180.0, 20.0, "Food: " + Player.getFoodCounter());
 
 	//Convert the current time to seconds
 	currentTime = System.currentTimeMillis() / 1000; //because no one likes milliseconds
@@ -361,7 +377,22 @@ public class Scene {
 
 	}
 
-    public static boolean canMove(int x, int y) {
-        return !walls[y][x];
+public static boolean canMove(int x, int y) {
+    // Ensure x and y are within the bounds of the walls array
+    if (x < 0 || x >= cols || y < 0 || y >= rows) {
+        return false; // Out of bounds, can't move
     }
+    return !walls[y][x]; // Check if the tile is not a wall
+}
+
+//To use for the ghostie
+public static int getCols() {
+    return cols;
+}
+
+public static int getRows() {
+    return rows;
+}
+
+
 }

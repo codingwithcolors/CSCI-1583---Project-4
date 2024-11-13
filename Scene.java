@@ -3,19 +3,19 @@
 
 public class Scene {
     private static final int TILE_SIZE = 32;
-    private static int rows; // # of rows and cols
+    private static int rows;
     private static int cols;
-    private static boolean[][] walls; // 2d array reps walls
+    private static boolean[][] walls;
     private static int width;
     private static int height;
     private static String floorImage;
     private static String wallImage;
     //Food
     private static String foodImage;
-    private static int foodX; // coords for food
+    private static int foodX;
     private static int foodY; //Setup for multiple food items for each level
     //Keys and Gems
-    private static int keyX = -1; // coords for key
+    private static int keyX = -1;
     private static int keyY = -1; //Add key off grid
     private static String keyImage;
     private static boolean keyPickup = false; //Set key pickup to be false to prepare for later player interaction
@@ -24,9 +24,9 @@ public class Scene {
     private static int gemY = -1; //Add jack o lantern off grid
     private static boolean gemPickup = false; //Set gem pickup to be false
     //PopUp Messages
-    private static double popupTextX; // position of pop up texts
+    private static double popupTextX;
     private static double popupTextY;
-    private static boolean showKeyMessage = false; // different pop up messages 
+    private static boolean showKeyMessage = false;
     private static boolean showExitMessage = false;
     private static boolean showGemMessage = false;
     private static boolean showLevelMessage = false; //Set pop up messages to be false to prepare for later conditions to be true
@@ -35,16 +35,15 @@ public class Scene {
     private static long exitMessageStartTime = 0;
     private static long levelMessageStartTime = 0; //Set timer for popup messages to initially be 0
     //Timer
-    private static long startTime; // start time of timer
+    private static long startTime;
     private static final int TIMER_DURATION = 90; //Can change duration later for game balance
     //Duration for each popup message
-    private static final int MESSAGE_DURATION_SECONDS = 2; //Set timer for all messages to be 2 seconds
+    private static final int MESSAGE_DURATION_SECONDS = 2; //Set timer for all messages to be 5 seconds
     //Music & SFX
     private static Music pickupSound; //Play sfx for pickup
-    
-    // initializes scene
+
+
     public static void start(int level) {
-	    //initializes images
         floorImage = "Assets/tile-passage.png";
         wallImage = "Assets/tile-brickwall.png";
         keyImage = "Assets/key.png";
@@ -56,12 +55,10 @@ public class Scene {
         //SFX
         pickupSound = new Music("Assets/item-pickup-sfx.wav");
 
-	// get map layout for current level
         String[][] map = World.getLevel(level);
-        rows = map.length; // # of rows 
-        cols = map[0].length; // # of cols
-	    
-	// calculates width and heigh of the scene
+        rows = map.length;
+        cols = map[0].length;
+
         width = cols * TILE_SIZE;
         height = rows * TILE_SIZE;
 
@@ -82,15 +79,15 @@ public class Scene {
 				popupTextX = width * 0.01;
 				popupTextY = height * 0.98;
 	}
-	// initialize walls array
+
         walls = new boolean[rows][cols];
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
-                String tile = map[y][x]; // gets the tile
-                setTile(x, y, tile); // sets the tile
+                String tile = map[y][x];
+                setTile(x, y, tile);
             }
         }
-	// starts game timer
+
         startTime = System.currentTimeMillis() / 1000; //say no to milliseconds, start timer in seconds
 
         // Setup canvas data (tile & scale)
@@ -217,6 +214,7 @@ public class Scene {
 	  	if (Player.getX() == foodX && Player.getY() == foodY){
 	  		Player.setFoodCounter(Player.getFoodCounter() + 10); //adds 2 to the food counter when food's collecting
               placeFood(); //Place new food at different location after collected  		
+	  		  pickupSound.play();// play the pickup sfx
 	  	}
 	 	}
 

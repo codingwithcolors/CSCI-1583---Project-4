@@ -1,124 +1,127 @@
-import java.util.Random; // import random class
+import java.util.ArrayList;
 
-public class Ghost {
-    public static final int TILE_SIZE = 32;
+public class MazeGame {
+    private static boolean gameOver; // checks if game's over
+    private static Music backgroundMusic; // Play background music
+    private static Music levelExit; // Play sfx for exiting a level
+    private static ArrayList<Bullet> bullets = new ArrayList<>();
+    private static ArrayList<Ghost> ghosts = new ArrayList<>();
 
-    //ghost position and image
-    private static int x;
-    private static int y;
-    private static String image;
-    private boolean isHexed = false;
+    // current game level
+    public static int level;
 
-    // speed of the ghost (how many tiles it moves per update)
-    private static final int SPEED = 1;
-    private static Random rand = new Random(); // creates a random number generator
+    // Start game algorithm
+    public static void start() {
+        gameOver = false;
+        level = 0;
+        World.start();
+        Scene.start(level);
+        // starting player positions
+        Player.start(1, 1);
 
-    public void hex(){
-        isHexed = true;
-        this.image = "Assets/ghost-hexxed.png";
+        // Instantiate and start Ghost objects
+        Ghost ghost1 = new Ghost();
+        ghost1.start(5, 5);
+        ghosts.add(ghost1); // Add ghost to the list
+
+        // Initialize and play background music
+        backgroundMusic = new Music("Assets/background-music.wav");
+        backgroundMusic.playLoop();
+
+        // Play sfx with level advancement
+        levelExit = new Music("Assets/level-exit-sfx.wav");
     }
 
-    public boolean isHexed(){
-        return isHexed;
-    }
-
-    // start the ghost at a specific position
-    public static void startRandom() {
-        image = "Assets/Ghost.png"; // Set the image of the ghost
-
-        //Get the maze dimensions for each level and pick a random coordinate
-        int cols = Scene.getCols();
-        int rows = Scene.getRows();
-
-        //Find a random position that doesn't overlap the walls
-        do {
-            x = rand.nextInt(cols); // Random x position
-            y = rand.nextInt(rows); // Random y position
-       } while (x == Player.getX() && y == Player.getY() || !Scene.canMove(x, y));
-    }
-
-    // draw the ghost at its current position
-    public static void draw() {
-        int tileX = x * TILE_SIZE + TILE_SIZE / 2;
-        int tileY = y * TILE_SIZE + TILE_SIZE / 2;
-        StdDraw.picture(tileX, tileY, image); // draw the ghost at its position
-    }
-
-    // update the ghost's position to chase the player
+    // Update game logic
     public static void update() {
-        if (!Player.hasMoved()) {
-            return; // return if the player hasn't moved
+        Player.update(); // update player position
+        Player.updateBullets(ghosts); // update bullets
+
+        // Update each ghost's position by looping through the list of ghosts
+        for (Ghost ghost : ghosts) {
+            ghost.update(); // Call the non-static update method on each ghost instance
         }
 
-        // get the player's current position
-        int playerX = Player.getX();
-        int playerY = Player.getY();
+        Scene.pickupLogic(level); // Pass logic for key and gem
+        Scene.foodCounterCheck(); // Pass food counter logic
 
-        // try to move towards the player, but randomize if stuck
-        boolean moved = false;
+        // Check if player reaches exit and has the key
+        if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY() && Scene.hasKey() && Scene.hasGem()) {
+            System.out.println("Current level: " + level); // Debug message to ensure player is on the right level
+            level++;
+            System.out.println("Player advanced to level: " + level); // Debug message for level type
+            levelExit.play();
 
-        // try moving towards the player horizontally (left-right)
-        if (x < playerX && Scene.canMove(x + SPEED, y)) {
-            x++; // move right towards the player
-            moved = true;
-        } else if (x > playerX && Scene.canMove(x - SPEED, y)) {
-            x--; // move left towards the player
-            moved = true;
-        }
+            // Reset the ghosts at the start of the new level
+            resetGhosts();
 
-        // try moving towards the player vertically (up-down)
-        if (!moved) {
-            if (y < playerY && Scene.canMove(x, y + SPEED)) {
-                y++; // move down towards the player
-                moved = true;
-            } else if (y > playerY && Scene.canMove(x, y - SPEED)) {
-                y--; // move up towards the player
-                moved = true;
+            // If player reached the last level, end the game
+            if (level == World.getLength()) {
+                gameOver = true;
+            } else {
+                Scene.start(level); // start new level scene
             }
         }
 
-        // if the ghost couldn't move towards the player, move randomly
-        if (!moved) {
-            randomDirection();
+        // Check if any ghost catches the player
+        for (Ghost ghost : ghosts) {
+            if (Player.getX() == ghost.getX() && Player.getY() == ghost.getY()) {
+                if (!ghost.isHexed()) {
+                    gameOver = true; // Ends the game if ghost catches the player
+                    StdDraw.setPenColor(StdDraw.WHITE);
+                    StdDraw.textLeft(10.0, 20.0, "Game Over! The ghost caught you.");
+                }
+                break; // Stop checking other ghosts once the game is over
+            }
+        }
+
+        // Check if food counter is 0
+        if (Player.getFoodCounter() <= 0) {
+            StdDraw.setPenColor(StdDraw.WHITE);
+            StdDraw.textLeft(10.0, 20.0, "Game Over! You ran out of food.");
+            gameOver = true;
         }
     }
 
-    // randomly move the ghost if it is stuck. Scene.canMove checks whether
-    // it can move to a new tile.
-    private static void randomDirection() {
-        // try a random direction (up, down, left, right)
-        int direction = rand.nextInt(4); // 0 = left, 1 = right, 2 = up, 3 = down
-
-        switch (direction) {
-            case 0: // try moving left
-                if (Scene.canMove(x - SPEED, y)) {
-                    x--;
-                }
-                break;
-            case 1: // try moving right
-                if (Scene.canMove(x + SPEED, y)) {
-                    x++;
-                }
-                break;
-            case 2: // try moving up
-                if (Scene.canMove(x, y - SPEED)) {
-                    y--;
-                }
-                break;
-            case 3: // try moving down
-                if (Scene.canMove(x, y + SPEED)) {
-                    y++;
-                }
-                break;
+    // Reset ghosts to normal at the start of each level
+    private static void resetGhosts() {
+        for (Ghost ghost : ghosts) {
+            ghost.setHexed(false);
+            ghost.resetPosition();
         }
     }
 
-    public static int getX()
-        {
-            return x;
+    // Render (draw) game objects
+    public static void render() {
+        Scene.draw(); // draw scene
+        Exit.draw(); // draw exit
+        Player.draw(); // draw player
+
+        // Draw all ghosts
+        for (Ghost ghost : ghosts) {
+            ghost.draw(); // Call draw() for each ghost in the list
         }
-    public static int getY()
-        {
-            return y;
+
+        Player.drawBullets(); // draw bullets
+        StdDraw.show(100); // Show the updated screen after all drawing operations
+    }
+
+    // Main game loop
+    public static void main(String[] args) {
+        start(); // start game
+        while (!gameOver) { // loop while game isn't over
+            update(); // update game logic
+            render(); // render updated game
         }
+
+        // Stop the background music when the game ends
+        if (backgroundMusic != null) {
+            backgroundMusic.stop();
+        }
+    }
+
+    // Allow for more game over methods to be referenced
+    public static void setGameOver(boolean status) {
+        gameOver = status;
+    }
 }

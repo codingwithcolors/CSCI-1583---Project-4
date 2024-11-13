@@ -207,16 +207,12 @@ public class Scene {
 	  		//if player moves, decrease food counter by 1
 	  		if (Player.getFoodCounter() <= 0)
 	  			{
-	  				StdDraw.setPenColor(StdDraw.WHITE);
-                	StdDraw.textLeft(10.0, 20.0, "Game Over! You ran out of food.");
                 	return;
 	  			}
 
 	  	//Check if player has landed on a food item
 	  	if (Player.getX() == foodX && Player.getY() == foodY){
 	  		Player.setFoodCounter(Player.getFoodCounter() + 10); //adds 2 to the food counter when food's collecting
-	  		StdDraw.setPenColor(StdDraw.WHITE);
-              StdDraw.textLeft(10.0, 20.0, "Food collected! Food counter increased.");	
               placeFood(); //Place new food at different location after collected  		
 	  	}
 	 	}

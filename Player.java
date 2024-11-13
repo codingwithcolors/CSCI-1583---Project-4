@@ -77,32 +77,34 @@ public class Player {
         playerMoved = moved;
     }
 
-    public static void updateBullets(ArrayList<Ghost> ghosts) {
-        for (int i = 0; i < bullets.size(); i++) {
-            Bullet bullet = bullets.get(i);
-            bullet.move();
+public static void updateBullets(ArrayList<Ghost> ghosts) {
+    for (int i = 0; i < bullets.size(); i++) {
+        Bullet bullet = bullets.get(i);
+        bullet.move();
 
-            // Check for collisions with the ghosts
-            for (Ghost ghost : ghosts) {
-                if (bullet.collidesWith(ghost)) {
-                    ghost.hex(); // Change the ghost to a hexed state
-                    bullet.deactivate(); // Deactivate the bullet after hitting
-                }
-            }
-
-            // Remove inactive bullets from the list     
-            if (!bullet.isActive()) {
-                bullets.remove(i);
-                i--; // Adjust index after removal
+        // Check for collisions with the ghosts
+        for (Ghost ghost : ghosts) {
+            if (bullet.collidesWith(ghost)) {
+                ghost.stop(); // Stop the ghost instead of hexing it
+                bullet.deactivate(); // Deactivate the bullet after hitting
+                break; // Stop checking for other ghosts if hit
             }
         }
-    }
 
-    public static void drawBullets() {
-        for (Bullet bullet : bullets) {
-            bullet.draw();
+        // Remove inactive bullets from the list
+        if (!bullet.isActive()) {
+            bullets.remove(i);
+            i--; // Adjust index after removal
         }
     }
+}
+
+public static void drawBullets() {
+    for (Bullet bullet : bullets) {
+        bullet.draw();
+    }
+}
+
 
     // Get current food counter
     public static int getFoodCounter() {

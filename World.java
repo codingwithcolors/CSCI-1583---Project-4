@@ -1,6 +1,5 @@
 //Amber Williams and Dom Ketchens
 //Project 4: Maze Game - World
-
 import java.util.Scanner;
 
 public class World {

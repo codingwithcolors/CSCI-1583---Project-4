@@ -50,7 +50,7 @@ public class MazeGame{
 
             // check if player reaches exit and has the key
             if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY() && Scene.hasKey() && Scene.hasGem()) {
-            	System.out.println("Current level: " + level); //Debug message to ensure player is on the right level
+                System.out.println("Current level: " + level); //Debug message to ensure player is on the right level
                 level++;
                 System.out.println("Player advanced to level: " + level); //Debug message for level type
                 levelExit.play();
@@ -86,11 +86,10 @@ public class MazeGame{
         }
 
         //Reset ghosts to normal at the start of each level
-        private static void resetGhosts(){
+        public static void resetGhosts(){
             for (Ghost ghost : ghosts)
                 {
                     ghost.setHexed(false);
-                    ghost.resetPosition();
                 }
             }
 
@@ -127,7 +126,7 @@ public class MazeGame{
 
     //Allow for more game over methods to be referenced
     public static void setGameOver(boolean status)
-    	{
-    		gameOver = status;
-    	}
+        {
+            gameOver = status;
+        }
 }

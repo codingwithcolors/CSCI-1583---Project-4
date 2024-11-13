@@ -1,5 +1,6 @@
 //Amber Williams and Dom Ketchens
 //Project 4: Maze Game - Scene
+import java.util.ArrayList;
 
 public class Scene {
     private static final int TILE_SIZE = 32;
@@ -42,6 +43,7 @@ public class Scene {
     //Music & SFX
     private static Music pickupSound; //Play sfx for pickup
 
+    private static ArrayList<Ghost> ghosts = new ArrayList<>(); // declares ghost list
 
     public static void start(int level) {
         floorImage = "Assets/tile-passage.png";
@@ -63,22 +65,22 @@ public class Scene {
         height = rows * TILE_SIZE;
 
         //Popup text that changes for each level
-		StdDraw.setPenColor(StdDraw.WHITE);
-		//Set popup text dimensions for each level
-		if (level == 0)
-			{
-				popupTextX = width * 0.01;
-				popupTextY = height * 0.96;
-		} else if (level == 1){
-				popupTextX = width * 0.01;
-				popupTextY = height * 0.96;
-		} else if (level == 2){
-				popupTextX = width * 0.01;
-				popupTextY = height * 0.98;
-		} else if (level == 3){
-				popupTextX = width * 0.01;
-				popupTextY = height * 0.98;
-	}
+        StdDraw.setPenColor(StdDraw.WHITE);
+        //Set popup text dimensions for each level
+        if (level == 0)
+            {
+                popupTextX = width * 0.01;
+                popupTextY = height * 0.96;
+        } else if (level == 1){
+                popupTextX = width * 0.01;
+                popupTextY = height * 0.96;
+        } else if (level == 2){
+                popupTextX = width * 0.01;
+                popupTextY = height * 0.98;
+        } else if (level == 3){
+                popupTextX = width * 0.01;
+                popupTextY = height * 0.98;
+    }
 
         walls = new boolean[rows][cols];
         for (int y = 0; y < rows; y++) {
@@ -106,132 +108,151 @@ public class Scene {
 
         //Place jack-o-lanterns in a random location
         do
-        	{
-        		gemX = (int) (Math.random() * cols);
-        		gemY = (int) (Math.random() * rows);
-        	}
+            {
+                gemX = (int) (Math.random() * cols);
+                gemY = (int) (Math.random() * rows);
+            }
         while (walls[gemY][gemX] ||
-    			(gemX == Exit.getX() && gemY == Exit.getY()) ||
-        		(gemX == Player.getX() && gemY == Player.getY()));
+                (gemX == Exit.getX() && gemY == Exit.getY()) ||
+                (gemX == Player.getX() && gemY == Player.getY()));
 
         //Place key in a random location
         do
-        	{
-        		keyX = (int) (Math.random() * cols);
-        		keyY = (int) (Math.random() * rows);
+            {
+                keyX = (int) (Math.random() * cols);
+                keyY = (int) (Math.random() * rows);
  
-        	//Check if the key is within bounds of the game popup
-        	withinBounds = (keyX >= 0 && keyX < cols) && (keyY >= 0 && keyY < rows);
+            //Check if the key is within bounds of the game popup
+            withinBounds = (keyX >= 0 && keyX < cols) && (keyY >= 0 && keyY < rows);
 
-        	//Check if the key is overlapping a brick wall tile
-        	overWall = withinBounds && walls[keyY][keyX];
+            //Check if the key is overlapping a brick wall tile
+            overWall = withinBounds && walls[keyY][keyX];
 
-        	//Check if the key is overlapping the exit tile
-        	overExit = withinBounds && (keyX == Exit.getX() && keyY == Exit.getY());
+            //Check if the key is overlapping the exit tile
+            overExit = withinBounds && (keyX == Exit.getX() && keyY == Exit.getY());
 
-        	//Check if the key is overlapping the jack-o-lantern
-        	overGem = withinBounds && (keyX == gemX && keyY == gemY);
+            //Check if the key is overlapping the jack-o-lantern
+            overGem = withinBounds && (keyX == gemX && keyY == gemY);
 
 
-        	//Debug Script that shows how the do while loop keeps running until the correct conditions are met
-        	if (withinBounds == false)
-        		{
-        			System.out.println("Key is out of bounds: " + keyX + ", " + keyY);
-        		}
-        	if (overWall)
-        		{
-        			System.out.println("Key is on a wall at: " + keyX + ", " + keyY);
-        		}
-        	if (overExit)
-        		{
-        			System.out.println("Key is on the exit at: " + keyX + ", " + keyY);
-        		}
-    }	while (withinBounds == false || overWall || overExit);
-	}
+            //Debug Script that shows how the do while loop keeps running until the correct conditions are met
+            if (withinBounds == false)
+                {
+                    System.out.println("Key is out of bounds: " + keyX + ", " + keyY);
+                }
+            if (overWall)
+                {
+                    System.out.println("Key is on a wall at: " + keyX + ", " + keyY);
+                }
+            if (overExit)
+                {
+                    System.out.println("Key is on the exit at: " + keyX + ", " + keyY);
+                }
+    }   while (withinBounds == false || overWall || overExit);
+    }
 
-	//Check if the player has the key for MazeGame.java to check
-	public static boolean hasKey()
-		{
-			return keyPickup;
-		}
+    //Check if the player has the key for MazeGame.java to check
+    public static boolean hasKey()
+        {
+            return keyPickup;
+        }
 
-	//Check if the player has the gem for MazeGame.java to check
-	public static boolean hasGem()
-		{
-			return gemPickup;
-		}
+    //Check if the player has the gem for MazeGame.java to check
+    public static boolean hasGem()
+        {
+            return gemPickup;
+        }
 
 
     public static void pickupLogic(int level)
-    	{
-			//Check Key Pickup
-			if (Player.getX() == keyX && Player.getY() == keyY && keyPickup == false) //Checking if keyPickup is set to false and moving the key off the grid completely prevents anymore interactions once the key has been picked up by the player
-			{
-				keyPickup = true;
-				keyX = cols + 1; //Put the key off the grid
-				keyY = rows + 1; //Put the key off the grid
-				showKeyMessage = true;
-				keyMessageStartTime = System.currentTimeMillis() / 1000; //Set start time for the key pop up message
-				pickupSound.play();
-			}
+        {
+            //Check Key Pickup
+            if (Player.getX() == keyX && Player.getY() == keyY && keyPickup == false) //Checking if keyPickup is set to false and moving the key off the grid completely prevents anymore interactions once the key has been picked up by the player
+            {
+                keyPickup = true;
+                keyX = cols + 1; //Put the key off the grid
+                keyY = rows + 1; //Put the key off the grid
+                showKeyMessage = true;
+                keyMessageStartTime = System.currentTimeMillis() / 1000; //Set start time for the key pop up message
+                pickupSound.play();
+            }
 
-			//Check gem pickup
-			if (Player.getX() == gemX && Player.getY() == gemY && gemPickup == false)
-					{
-						gemPickup = true;
-						gemX = cols + 1;
-						gemY = cols + 1; //Put the jack o lantern off the grid
-						showGemMessage = true;
-						gemMessageStartTime = System.currentTimeMillis() / 1000;
-						pickupSound.play();
-					}
+            //Check gem pickup
+            if (Player.getX() == gemX && Player.getY() == gemY && gemPickup == false)
+                    {
+                        gemPickup = true;
+                        gemX = cols + 1;
+                        gemY = cols + 1; //Put the jack o lantern off the grid
+                        showGemMessage = true;
+                        gemMessageStartTime = System.currentTimeMillis() / 1000;
+                        pickupSound.play();
+                    }
 
-		//Lock the door if the player doesn't have both the key and the gem
-		if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY()) //note exit naming may not be accurate due to having to change for the file
-			{
-				if (keyPickup == false || gemPickup == false) //Prevent the player from advancing until keyPickup is true
-					{
-						showExitMessage = true;
-						exitMessageStartTime = System.currentTimeMillis() / 1000; //Set start time for the exit pop up message
-					}
-				else
-					{
-						showLevelMessage = true;
-						levelMessageStartTime = System.currentTimeMillis() / 1000; //Set start time for the level progression pop up message
-					}
-	  		}
-	  	}
+        //Lock the door if the player doesn't have both the key and the gem
+        if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY()) //note exit naming may not be accurate due to having to change for the file
+            {
+                if (keyPickup == false || gemPickup == false) //Prevent the player from advancing until keyPickup is true
+                    {
+                        showExitMessage = true;
+                        exitMessageStartTime = System.currentTimeMillis() / 1000; //Set start time for the exit pop up message
+                    }
+                else
+                    {
+                        showLevelMessage = true;
+                        levelMessageStartTime = System.currentTimeMillis() / 1000; //Set start time for the level progression pop up message
+                    }
+            }
+        }
+    public static void resetGhosts() {
+        for (Ghost ghost : ghosts) {
+            ghost.resetPosition();
+            ghost.setHexed(false);
+        }
+    }
+    // Check ghost collisions
+    public static void checkGhostCollisions(ArrayList<Ghost> ghosts) {
+        for (Ghost ghost : ghosts) {
+            if (ghost.getX() == Player.getX() && ghost.getY() == Player.getY()) {
+                // If the ghost is not hexed, damage the player
+                if (ghost.isHexed()) {
+                } else {
+                    // If hexed, the ghost flees instead of damaging the player
+                    ghost.fleeFromPlayer(Player.getX(), Player.getY());
+                }
+            }
+        }
+    }
 
-	  	//Check and update food counter
-	  	public static void foodCounterCheck() {
-	  		//if player moves, decrease food counter by 1
-	  		if (Player.getFoodCounter() <= 0)
-	  			{
-                	return;
-	  			}
+        //Check and update food counter
+        public static void foodCounterCheck() {
+            //if player moves, decrease food counter by 1
+            if (Player.getFoodCounter() <= 0)
+                {
+                    return;
+                }
 
-	  	//Check if player has landed on a food item
-	  	if (Player.getX() == foodX && Player.getY() == foodY){
-	  		Player.setFoodCounter(Player.getFoodCounter() + 10); //adds 2 to the food counter when food's collecting
-              placeFood(); //Place new food at different location after collected  		
-	  	}
-	 	}
+        //Check if player has landed on a food item
+        if (Player.getX() == foodX && Player.getY() == foodY){
+            Player.setFoodCounter(Player.getFoodCounter() + 10); //adds 2 to the food counter when food's collecting
+              placeFood(); //Place new food at different location after collected       
+        }
+        }
 
-	  	//Randomly places food at a new location (avoiding the walls)
-	  	public static void placeFood()
-	  		{
-	  			do {
-	  				foodX = randomCoordinates(cols);
-	  				foodY = randomCoordinates(rows);
-	  			} while ((walls[foodY][foodX] || (foodX == Exit.getX() && foodY == Exit.getY())) || (foodX == gemX && foodY == gemY) || (foodX == keyX && foodY == keyY)); //Ensures food isn't places on a wall or exit
-	  		}
-	  	//Random coordinate generator for food
-	  	public static int randomCoordinates(int size)
-	  		{
-	  			return (int) (Math.random() * size);
-	  		}
+        //Randomly places food at a new location (avoiding the walls)
+        public static void placeFood()
+            {
+                do {
+                    foodX = randomCoordinates(cols);
+                    foodY = randomCoordinates(rows);
+                } while ((walls[foodY][foodX] || (foodX == Exit.getX() && foodY == Exit.getY())) || (foodX == gemX && foodY == gemY) || (foodX == keyX && foodY == keyY)); //Ensures food isn't places on a wall or exit
+            }
+        //Random coordinate generator for food
+        public static int randomCoordinates(int size)
+            {
+                return (int) (Math.random() * size);
+            }
 
-	//Set tiles for walls, player spawn and exit	
+    //Set tiles for walls, player spawn and exit    
     public static void setTile(int x, int y, String tile) {
         if (tile.equals("#")) {
             walls[y][x] = true; //walls
@@ -244,7 +265,7 @@ public class Scene {
 
     //Draw the level on the canvas
     public static void draw() {
-    	//Draw all tiles for the walls and floors
+        //Draw all tiles for the walls and floors
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 int tileX = x * TILE_SIZE + TILE_SIZE / 2;
@@ -252,7 +273,7 @@ public class Scene {
 
                 if (walls[y][x] == true) {
                     StdDraw.picture(tileX, tileY, wallImage);
-            	} else {
+                } else {
                     StdDraw.picture(tileX, tileY, floorImage);
                 }
             }
@@ -261,117 +282,117 @@ public class Scene {
     //Draw the key in the level
     //Calculates the center position
     if (keyPickup == false)
-    	{
-    		int keyTileX = keyX * TILE_SIZE + TILE_SIZE/2;
-    		int keyTileY = keyY * TILE_SIZE + TILE_SIZE/2;
-    		StdDraw.picture(keyTileX, keyTileY, keyImage);
-   		}
+        {
+            int keyTileX = keyX * TILE_SIZE + TILE_SIZE/2;
+            int keyTileY = keyY * TILE_SIZE + TILE_SIZE/2;
+            StdDraw.picture(keyTileX, keyTileY, keyImage);
+        }
 
     //Draw the jack-o-lantern in the level
     if (gemPickup == false)
-    	{
-    		int gemTileX = gemX * TILE_SIZE + TILE_SIZE/2;
-    		int gemTileY = gemY * TILE_SIZE + TILE_SIZE/2;
-    		StdDraw.picture(gemTileX, gemTileY, gemImage);
-   		}
+        {
+            int gemTileX = gemX * TILE_SIZE + TILE_SIZE/2;
+            int gemTileY = gemY * TILE_SIZE + TILE_SIZE/2;
+            StdDraw.picture(gemTileX, gemTileY, gemImage);
+        }
 
-   	//Checks if foodX and foodY have been assigned valid coordinates
-   		if (foodX != -1 && foodY != -1){
-   			int foodTileX = foodX * TILE_SIZE + TILE_SIZE / 2;
-   			int foodTileY = foodY * TILE_SIZE + TILE_SIZE / 2;
-   			StdDraw.picture(foodTileX, foodTileY, foodImage);
-   		}
+    //Checks if foodX and foodY have been assigned valid coordinates
+        if (foodX != -1 && foodY != -1){
+            int foodTileX = foodX * TILE_SIZE + TILE_SIZE / 2;
+            int foodTileY = foodY * TILE_SIZE + TILE_SIZE / 2;
+            StdDraw.picture(foodTileX, foodTileY, foodImage);
+        }
 
-   	//Setup text color for all key and gem messages
-	StdDraw.setPenColor(StdDraw.WHITE);
+    //Setup text color for all key and gem messages
+    StdDraw.setPenColor(StdDraw.WHITE);
 
-	//Check current time for message duration (in milliseconds because seconds isn't built into Java because Java hates me)
-	long currentTime = System.currentTimeMillis() / 1000;
+    //Check current time for message duration (in milliseconds because seconds isn't built into Java because Java hates me)
+    long currentTime = System.currentTimeMillis() / 1000;
 
-	//Popup message if player picks up the key but not the gem
-	//Added if else for all scenarios to be logically sound for the player
-	if (showKeyMessage && gemPickup == false && (currentTime - keyMessageStartTime < MESSAGE_DURATION_SECONDS))
-		{
-			StdDraw.textLeft(popupTextX, popupTextY, "Picked up the key. Find the jack-o-lantern!");
-		}
-	else if (showKeyMessage && (currentTime - keyMessageStartTime >= MESSAGE_DURATION_SECONDS))
-		{
-			showKeyMessage = false; //Reset key popup message once the duration is over
-		}
+    //Popup message if player picks up the key but not the gem
+    //Added if else for all scenarios to be logically sound for the player
+    if (showKeyMessage && gemPickup == false && (currentTime - keyMessageStartTime < MESSAGE_DURATION_SECONDS))
+        {
+            StdDraw.textLeft(popupTextX, popupTextY, "Picked up the key. Find the jack-o-lantern!");
+        }
+    else if (showKeyMessage && (currentTime - keyMessageStartTime >= MESSAGE_DURATION_SECONDS))
+        {
+            showKeyMessage = false; //Reset key popup message once the duration is over
+        }
 
-	//Popup message if player picks up the gem but not the key
-	if (showGemMessage && keyPickup == false && (currentTime - gemMessageStartTime < MESSAGE_DURATION_SECONDS))
-		{
-			StdDraw.textLeft(popupTextX, popupTextY, "Picked up the jack-o-lantern. Find the key!");
-		}
-	else if (showGemMessage && (currentTime - gemMessageStartTime >= MESSAGE_DURATION_SECONDS))
-		{
-			showGemMessage = false; //Reset gem popup message once the duration is over
+    //Popup message if player picks up the gem but not the key
+    if (showGemMessage && keyPickup == false && (currentTime - gemMessageStartTime < MESSAGE_DURATION_SECONDS))
+        {
+            StdDraw.textLeft(popupTextX, popupTextY, "Picked up the jack-o-lantern. Find the key!");
+        }
+    else if (showGemMessage && (currentTime - gemMessageStartTime >= MESSAGE_DURATION_SECONDS))
+        {
+            showGemMessage = false; //Reset gem popup message once the duration is over
 
-		}
+        }
 
-	//Popup message if player picks up the key but not the gem
-	if (showKeyMessage && gemPickup == true && (currentTime - keyMessageStartTime < MESSAGE_DURATION_SECONDS))
-		{
-			StdDraw.textLeft(popupTextX, popupTextY, "Picked up the key. Hurry to the exit!");
-		}
-	else if (showKeyMessage && (currentTime - keyMessageStartTime >= MESSAGE_DURATION_SECONDS))
-		{
-			showKeyMessage = false; //Reset key popup message once the duration is over
-		}
+    //Popup message if player picks up the key but not the gem
+    if (showKeyMessage && gemPickup == true && (currentTime - keyMessageStartTime < MESSAGE_DURATION_SECONDS))
+        {
+            StdDraw.textLeft(popupTextX, popupTextY, "Picked up the key. Hurry to the exit!");
+        }
+    else if (showKeyMessage && (currentTime - keyMessageStartTime >= MESSAGE_DURATION_SECONDS))
+        {
+            showKeyMessage = false; //Reset key popup message once the duration is over
+        }
 
-	//Popup message if player picks up the gem but not the key
-	if (showGemMessage && keyPickup == true && (currentTime - gemMessageStartTime < MESSAGE_DURATION_SECONDS))
-		{
-			StdDraw.textLeft(popupTextX, popupTextY, "Picked up the jack-o-lantern. Hurry to the exit!");
-		}
-	else if (showGemMessage && (currentTime - gemMessageStartTime >= MESSAGE_DURATION_SECONDS))
-		{
-			showGemMessage = false; //Reset gem popup message once the duration is over
+    //Popup message if player picks up the gem but not the key
+    if (showGemMessage && keyPickup == true && (currentTime - gemMessageStartTime < MESSAGE_DURATION_SECONDS))
+        {
+            StdDraw.textLeft(popupTextX, popupTextY, "Picked up the jack-o-lantern. Hurry to the exit!");
+        }
+    else if (showGemMessage && (currentTime - gemMessageStartTime >= MESSAGE_DURATION_SECONDS))
+        {
+            showGemMessage = false; //Reset gem popup message once the duration is over
 
-		}
+        }
 
-	//Popup message if the player tries to leave without the key or the gem
-	if (showExitMessage && (keyPickup == false || gemPickup == false) && (currentTime - exitMessageStartTime < MESSAGE_DURATION_SECONDS))
-		{
-			StdDraw.textLeft(popupTextX, popupTextY, "The door is locked. Find the key and the gem.");
-		}
-	else if (showExitMessage && (currentTime - exitMessageStartTime >= MESSAGE_DURATION_SECONDS))
-		{
-			showExitMessage = false; //Reset exit popup message once the duration is over
-		}
+    //Popup message if the player tries to leave without the key or the gem
+    if (showExitMessage && (keyPickup == false || gemPickup == false) && (currentTime - exitMessageStartTime < MESSAGE_DURATION_SECONDS))
+        {
+            StdDraw.textLeft(popupTextX, popupTextY, "The door is locked. Find the key and the gem.");
+        }
+    else if (showExitMessage && (currentTime - exitMessageStartTime >= MESSAGE_DURATION_SECONDS))
+        {
+            showExitMessage = false; //Reset exit popup message once the duration is over
+        }
 
-	//Popup message if the player has the key and the gem and reaches the exit
-	if (showLevelMessage && (keyPickup == true && gemPickup == true) && (currentTime - levelMessageStartTime < MESSAGE_DURATION_SECONDS))
-		{
-			StdDraw.textLeft(popupTextX, popupTextY, "You made it to the next level. Keep going!");
-		}
-	else if (showLevelMessage && (currentTime - levelMessageStartTime >= MESSAGE_DURATION_SECONDS))
-		{
-			showLevelMessage = false; //Reset level popup message once the duration is over
-		}
-	//Message for the food counter
-		StdDraw.textLeft(180.0, 20.0, "Food: " + Player.getFoodCounter());
+    //Popup message if the player has the key and the gem and reaches the exit
+    if (showLevelMessage && (keyPickup == true && gemPickup == true) && (currentTime - levelMessageStartTime < MESSAGE_DURATION_SECONDS))
+        {
+            StdDraw.textLeft(popupTextX, popupTextY, "You made it to the next level. Keep going!");
+        }
+    else if (showLevelMessage && (currentTime - levelMessageStartTime >= MESSAGE_DURATION_SECONDS))
+        {
+            showLevelMessage = false; //Reset level popup message once the duration is over
+        }
+    //Message for the food counter
+        StdDraw.textLeft(180.0, 20.0, "Food: " + Player.getFoodCounter());
 
-	//Convert the current time to seconds
-	currentTime = System.currentTimeMillis() / 1000; //because no one likes milliseconds
+    //Convert the current time to seconds
+    currentTime = System.currentTimeMillis() / 1000; //because no one likes milliseconds
 
-	//Convert the remaining time in seconds
-	long elapsedTime = currentTime - startTime;
-	long remainingTime = TIMER_DURATION - elapsedTime;
+    //Convert the remaining time in seconds
+    long elapsedTime = currentTime - startTime;
+    long remainingTime = TIMER_DURATION - elapsedTime;
 
-	//Check if the timer is finished
-	if (remainingTime <= 0)
-		{
-			MazeGame.setGameOver(true);
-		}
-	else
-		{
-			StdDraw.setPenColor(StdDraw.WHITE);
-			StdDraw.textLeft(10.0, 20.0, "Time: " + remainingTime + " seconds.");
-		}
+    //Check if the timer is finished
+    if (remainingTime <= 0)
+        {
+            MazeGame.setGameOver(true);
+        }
+    else
+        {
+            StdDraw.setPenColor(StdDraw.WHITE);
+            StdDraw.textLeft(10.0, 20.0, "Time: " + remainingTime + " seconds.");
+        }
 
-	}
+    }
 
 public static boolean canMove(int x, int y) {
     // Ensure x and y are within the bounds of the walls array

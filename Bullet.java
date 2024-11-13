@@ -1,5 +1,7 @@
 //Amber and Dom Ketchens
 //Project 4: Maze Game - Bullet
+//Amber and Dom Ketchens
+//Project 4: Maze Game - Bullet
 
 public class Bullet{
     private int x;
@@ -15,23 +17,23 @@ public class Bullet{
     }
 
     public void move() {
-    	if (!active) return;
+        if (!active) return;
 
-    	switch(direction){
+        switch(direction){
             case "up": y--;
-            	break;
+                break;
             case "down": y++;
-            	break;
+                break;
             case "left": x--;
-            	break;
+                break;
             case "right": x++;
-            	break;
-    	}
+                break;
+        }
 
     //Check if bullet goes out of boudns of collides with walls
     if (!Scene.canMove(x, y)){
-    	active = false; //end the bullet if it hits the wall or goes out of bounds
-    	}
+        active = false; //end the bullet if it hits the wall or goes out of bounds
+        }
     }
 
        public void draw() {

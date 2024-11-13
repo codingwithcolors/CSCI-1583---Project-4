@@ -13,20 +13,6 @@ public class Ghost {
     private static final int SPEED = 1;
     private static Random rand = new Random(); // Creates a random number generator
 
-    public static void hex() {
-        isHexed = true;
-        image = "Assets/ghost-hexxed.png";
-    }
-
-    // Setter for hexed state
-    public static void setHexed(boolean hexed) {
-        isHexed = hexed;
-    }
-
-    public static boolean isHexed() {
-        return isHexed;
-    }
-
     // Start the ghost at a specific position
     public static void startRandom() {
         image = "Assets/Ghost.png"; // Set the image of the ghost
@@ -59,41 +45,8 @@ public class Ghost {
         int playerX = Player.getX();
         int playerY = Player.getY();
 
-        if (isHexed) {
-            fleeFromPlayer(playerX, playerY); // Just move away, don't harm
-        } else {
-            moveTowardsPlayer(playerX, playerY);
-        }
-    }
-
-    // Flee from the player (move away from the player)
-    public static void fleeFromPlayer(int playerX, int playerY) {
-        boolean moved = false;
-
-        // Try moving away horizontally (left-right)
-        if (x < playerX && Scene.canMove(x + SPEED, y)) {
-            x++; // Move right away from the player
-            moved = true;
-        } else if (x > playerX && Scene.canMove(x - SPEED, y)) {
-            x--; // Move left away from the player
-            moved = true;
-        }
-
-        // Try moving away vertically (up-down)
-        if (!moved) {
-            if (y < playerY && Scene.canMove(x, y + SPEED)) {
-                y++; // Move down away from the player
-                moved = true;
-            } else if (y > playerY && Scene.canMove(x, y - SPEED)) {
-                y--; // Move up away from the player
-                moved = true;
-            }
-        }
-
-        // If the ghost couldn't move away, move randomly
-        if (!moved) {
-            randomDirection();
-        }
+        // Move towards the player
+        moveTowardsPlayer(playerX, playerY);
     }
 
     // Move towards the player (move towards the player)
@@ -156,6 +109,7 @@ public class Ghost {
         }
     }
 
+    // Getter methods for ghost position
     public static int getX() {
         return x;
     }
@@ -163,4 +117,4 @@ public class Ghost {
     public static int getY() {
         return y;
     }
-}
+}   

@@ -48,15 +48,19 @@ public class Player {
             if (key == 'w' && Scene.canMove(x, y - 1)) {
                 y--; moved = true; // 'w' Move up
                 image = "Assets/player-back-idle.png";
+                directionFacing = "up";
             } else if (key == 's' && Scene.canMove(x, y + 1)) {
                 y++; moved = true; // 's' Move down
                 image = "Assets/player-front-idle.png";
+                directionFacing = "down";
             } else if (key == 'a' && Scene.canMove(x - 1, y)) {
                 x--; moved = true; // 'a' Move left
                 image = "Assets/player-left-idle.png";
+                directionFacing = "left";
             } else if (key == 'd' && Scene.canMove(x + 1, y)) {
                 x++; moved = true; // 'd' Move right
                 image = "Assets/player-right-idle.png";
+                directionFacing = "right";
             } else if (key == ' ') { // Press spacebar to shoot bullet
                 Bullet newBullet = new Bullet(x, y, directionFacing);
                 bullets.add(newBullet);

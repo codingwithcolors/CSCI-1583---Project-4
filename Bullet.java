@@ -47,7 +47,7 @@ public class Bullet{
     }
 
     public boolean collidesWith(Ghost ghost) {
-        return active && Ghost.getX() == x && Ghost.getY() == y;
+        return active && ghost.getX() == x && ghost.getY() == y;
     }
 
     public void deactivate() {

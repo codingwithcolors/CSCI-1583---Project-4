@@ -7,7 +7,6 @@ public class MazeGame{
     private static boolean gameOver; // checks if game's over
     private static Music backgroundMusic; //Play background music
     private static Music levelExit; // Play sfx for exiting a level
-    private static ArrayList<Bullet> bullets = new ArrayList<>();
     private static ArrayList<Ghost> ghosts = new ArrayList<>();
 
         //current game level
@@ -37,8 +36,6 @@ public class MazeGame{
         //Update game logic
         public static void update(){
             Player.update(); // update player position
-            Player.updateBullets(ghosts); //updates bullets
-
             //Update each ghost's position by looping through the lists of ghosts
             for (Ghost ghost : ghosts)
                 {
@@ -50,13 +47,10 @@ public class MazeGame{
 
             // check if player reaches exit and has the key
             if (Player.getX() == Exit.getX() && Player.getY() == Exit.getY() && Scene.hasKey() && Scene.hasGem()) {
-            	System.out.println("Current level: " + level); //Debug message to ensure player is on the right level
+                System.out.println("Current level: " + level); //Debug message to ensure player is on the right level
                 level++;
                 System.out.println("Player advanced to level: " + level); //Debug message for level type
                 levelExit.play();
-
-                //Reset the ghosts at the start of the new level
-                resetGhosts();
 
                 // if player reached the last last, end the game
                 if (level == World.getLength()) {
@@ -71,7 +65,6 @@ public class MazeGame{
             // checks if ghost catches player
             for (Ghost ghost : ghosts){
             if (Player.getX() == Ghost.getX() && Player.getY() == Ghost.getY()) {
-                if (!ghost.isHexed())
                     {
                         gameOver = true; // ends the game if true
                     }
@@ -85,15 +78,6 @@ public class MazeGame{
             }
         }
 
-        //Reset ghosts to normal at the start of each level
-        private static void resetGhosts(){
-            for (Ghost ghost : ghosts)
-                {
-                    ghost.setHexed(false);
-                    ghost.resetPosition();
-                }
-            }
-
         // renders (draw)
         public static void render(){
             Scene.draw(); // draw scene
@@ -104,7 +88,6 @@ public class MazeGame{
             for (Ghost ghost : ghosts){
                 Ghost.draw(); // draw ghost
                 }
-            Player.drawBullets(); //draw bullets
             StdDraw.show(100);
         }
 
@@ -127,7 +110,7 @@ public class MazeGame{
 
     //Allow for more game over methods to be referenced
     public static void setGameOver(boolean status)
-    	{
-    		gameOver = status;
-    	}
+        {
+            gameOver = status;
+        }
 }

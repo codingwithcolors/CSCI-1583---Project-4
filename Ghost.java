@@ -7,20 +7,10 @@ public class Ghost {
     private static int x;
     private static int y;
     private static String image;
-    private boolean isHexed = false;
 
     // speed of the ghost (how many tiles it moves per update)
     private static final int SPEED = 1;
     private static Random rand = new Random(); // creates a random number generator
-
-    public void hex(){
-        isHexed = true;
-        this.image = "Assets/ghost-hexxed.png";
-    }
-
-    public boolean isHexed(){
-        return isHexed;
-    }
 
     // start the ghost at a specific position
     public static void startRandom() {

@@ -3,9 +3,9 @@
 
 public class Scene {
     private static final int TILE_SIZE = 32;
-    private static int rows;
+    private static int rows; // # of rows and cols
     private static int cols;
-    private static boolean[][] walls;
+    private static boolean[][] walls; // 2d array reps walls
     private static int width;
     private static int height;
     private static String floorImage;

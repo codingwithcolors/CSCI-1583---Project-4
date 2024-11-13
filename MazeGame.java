@@ -10,6 +10,9 @@ public class MazeGame{
     private static ArrayList<Bullet> bullets = new ArrayList<>();
     private static ArrayList<Ghost> ghosts = new ArrayList<>();
 
+        //current game level
+        public static int level;
+
         //Start game algorithm
         public static void start(){
             gameOver = false;
@@ -18,7 +21,10 @@ public class MazeGame{
             Scene.start(level);
             // starting player positions
             Player.start(1,1);
+            //Instantiate and start Ghost objects
+            Ghost ghost1 = new Ghost();
             Ghost.startRandom();
+            ghosts.add(ghost1); //Add ghost to the list
 
         //Initialize and play background music
         backgroundMusic = new Music("Assets/background-music.wav");
@@ -32,7 +38,13 @@ public class MazeGame{
         public static void update(){
             Player.update(); // update player position
             Player.updateBullets(ghosts); //updates bullets
-            Ghost.update(); // update ghost position
+
+            //Update each ghost's position by looping through the lists of ghosts
+            for (Ghost ghost : ghosts)
+                {
+                    Ghost.update(); // update ghost position from the non-static update method
+                }
+
             Scene.pickupLogic(level); //Pass logic for key and gem
             Scene.foodCounterCheck(); //Pass foodcounter logic
 
@@ -42,31 +54,56 @@ public class MazeGame{
                 level++;
                 System.out.println("Player advanced to level: " + level); //Debug message for level type
                 levelExit.play();
+
+                //Reset the ghosts at the start of the new level
+                resetGhosts();
+
                 // if player reached the last last, end the game
                 if (level == World.getLength()) {
                     gameOver = true;
                 }
                 else {
                     Scene.start(level); // start new level scene
-                    Ghost.startRandom(); //please work for once in your life ghost i am begging you whyyyy
+                    Ghost.startRandom(); //randomize the ghost
                 }
             }
+
             // checks if ghost catches player
+            for (Ghost ghost : ghosts){
             if (Player.getX() == Ghost.getX() && Player.getY() == Ghost.getY()) {
-                gameOver = true; // ends the game if true
+                if (!ghost.isHexed())
+                    {
+                        gameOver = true; // ends the game if true
+                    }
+                break; //Stop checking the other ghosts once the game ends
             }
+            }
+
             //Check if food counter is 0
             if (Player.getFoodCounter() <= 0){
                 gameOver = true;
             }
         }
 
+        //Reset ghosts to normal at the start of each level
+        private static void resetGhosts(){
+            for (Ghost ghost : ghosts)
+                {
+                    ghost.setHexed(false);
+                    ghost.resetPosition();
+                }
+            }
+
         // renders (draw)
         public static void render(){
             Scene.draw(); // draw scene
             Exit.draw(); // draw exit
             Player.draw(); // draw player
-            Ghost.draw(); // draw ghost
+
+            //Draw all ghosts
+            for (Ghost ghost : ghosts){
+                Ghost.draw(); // draw ghost
+                }
             Player.drawBullets(); //draw bullets
             StdDraw.show(100);
         }
@@ -87,8 +124,6 @@ public class MazeGame{
             }
 
         }
-
-        public static int level; // current game level
 
     //Allow for more game over methods to be referenced
     public static void setGameOver(boolean status)

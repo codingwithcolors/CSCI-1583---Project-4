@@ -3,109 +3,152 @@ import java.util.Random; // import random class
 public class Ghost {
     public static final int TILE_SIZE = 32;
 
-    //ghost position and image
+    // Ghost position and image
     private static int x;
     private static int y;
     private static String image;
-    private boolean isHexed = false;
+    private static boolean isHexed = false;
 
-    // speed of the ghost (how many tiles it moves per update)
+    // Speed of the ghost (how many tiles it moves per update)
     private static final int SPEED = 1;
-    private static Random rand = new Random(); // creates a random number generator
+    private static Random rand = new Random(); // Creates a random number generator
 
-    public void hex(){
+    public static void hex() {
         isHexed = true;
-        this.image = "Assets/ghost-hexxed.png";
+        image = "Assets/ghost-hexxed.png";
     }
 
-    public boolean isHexed(){
+    // Setter for hexed state
+    public static void setHexed(boolean hexed) {
+        isHexed = hexed;
+    }
+
+    public static boolean isHexed() {
         return isHexed;
     }
 
-    // start the ghost at a specific position
+    // Start the ghost at a specific position
     public static void startRandom() {
         image = "Assets/Ghost.png"; // Set the image of the ghost
 
-        //Get the maze dimensions for each level and pick a random coordinate
+        // Get the maze dimensions for each level and pick a random coordinate
         int cols = Scene.getCols();
         int rows = Scene.getRows();
 
-        //Find a random position that doesn't overlap the walls
+        // Find a random position that doesn't overlap the walls
         do {
             x = rand.nextInt(cols); // Random x position
             y = rand.nextInt(rows); // Random y position
-       } while (x == Player.getX() && y == Player.getY() || !Scene.canMove(x, y));
+        } while (x == Player.getX() && y == Player.getY() || !Scene.canMove(x, y));
     }
 
-    // draw the ghost at its current position
+    // Draw the ghost at its current position
     public static void draw() {
         int tileX = x * TILE_SIZE + TILE_SIZE / 2;
         int tileY = y * TILE_SIZE + TILE_SIZE / 2;
-        StdDraw.picture(tileX, tileY, image); // draw the ghost at its position
+        StdDraw.picture(tileX, tileY, image); // Draw the ghost at its position
     }
 
-    // update the ghost's position to chase the player
+    // Update the ghost's position to chase the player
     public static void update() {
         if (!Player.hasMoved()) {
-            return; // return if the player hasn't moved
+            return; // Return if the player hasn't moved
         }
 
-        // get the player's current position
+        // Get the player's current position
         int playerX = Player.getX();
         int playerY = Player.getY();
 
-        // try to move towards the player, but randomize if stuck
+        if (isHexed) {
+            fleeFromPlayer(playerX, playerY); // Just move away, don't harm
+        } else {
+            moveTowardsPlayer(playerX, playerY);
+        }
+    }
+
+    // Flee from the player (move away from the player)
+    public static void fleeFromPlayer(int playerX, int playerY) {
         boolean moved = false;
 
-        // try moving towards the player horizontally (left-right)
+        // Try moving away horizontally (left-right)
         if (x < playerX && Scene.canMove(x + SPEED, y)) {
-            x++; // move right towards the player
+            x++; // Move right away from the player
             moved = true;
         } else if (x > playerX && Scene.canMove(x - SPEED, y)) {
-            x--; // move left towards the player
+            x--; // Move left away from the player
             moved = true;
         }
 
-        // try moving towards the player vertically (up-down)
+        // Try moving away vertically (up-down)
         if (!moved) {
             if (y < playerY && Scene.canMove(x, y + SPEED)) {
-                y++; // move down towards the player
+                y++; // Move down away from the player
                 moved = true;
             } else if (y > playerY && Scene.canMove(x, y - SPEED)) {
-                y--; // move up towards the player
+                y--; // Move up away from the player
                 moved = true;
             }
         }
 
-        // if the ghost couldn't move towards the player, move randomly
+        // If the ghost couldn't move away, move randomly
         if (!moved) {
             randomDirection();
         }
     }
 
-    // randomly move the ghost if it is stuck. Scene.canMove checks whether
+    // Move towards the player (move towards the player)
+    public static void moveTowardsPlayer(int playerX, int playerY) {
+        boolean moved = false;
+
+        // Try to move horizontally (left-right)
+        if (x < playerX && Scene.canMove(x + SPEED, y)) { // Move right
+            x++;
+            moved = true;
+        } else if (x > playerX && Scene.canMove(x - SPEED, y)) { // Move left
+            x--;
+            moved = true;
+        }
+
+        // Try moving towards the player vertically (up-down)
+        if (!moved) {
+            if (y < playerY && Scene.canMove(x, y + SPEED)) {
+                y++; // Move down towards the player
+                moved = true;
+            } else if (y > playerY && Scene.canMove(x, y - SPEED)) {
+                y--; // Move up towards the player
+                moved = true;
+            }
+        }
+
+        // If the ghost couldn't move towards the player, move randomly
+        if (!moved) {
+            randomDirection();
+        }
+    }
+
+    // Randomly move the ghost if it is stuck. Scene.canMove checks whether
     // it can move to a new tile.
     private static void randomDirection() {
-        // try a random direction (up, down, left, right)
+        // Try a random direction (up, down, left, right)
         int direction = rand.nextInt(4); // 0 = left, 1 = right, 2 = up, 3 = down
 
         switch (direction) {
-            case 0: // try moving left
+            case 0: // Try moving left
                 if (Scene.canMove(x - SPEED, y)) {
                     x--;
                 }
                 break;
-            case 1: // try moving right
+            case 1: // Try moving right
                 if (Scene.canMove(x + SPEED, y)) {
                     x++;
                 }
                 break;
-            case 2: // try moving up
+            case 2: // Try moving up
                 if (Scene.canMove(x, y - SPEED)) {
                     y--;
                 }
                 break;
-            case 3: // try moving down
+            case 3: // Try moving down
                 if (Scene.canMove(x, y + SPEED)) {
                     y++;
                 }
@@ -113,12 +156,11 @@ public class Ghost {
         }
     }
 
-    public static int getX()
-        {
-            return x;
-        }
-    public static int getY()
-        {
-            return y;
-        }
+    public static int getX() {
+        return x;
+    }
+
+    public static int getY() {
+        return y;
+    }
 }

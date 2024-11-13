@@ -1,6 +1,5 @@
 //Amber and Dom Ketchens
 //Project 4: Maze Game - Bullet
-
 public class Bullet{
     private int x;
     private int y;
@@ -47,7 +46,7 @@ public class Bullet{
     }
 
     public boolean collidesWith(Ghost ghost) {
-        return active && Ghost.getX() == x && Ghost.getY() == y;
+        return active && ghost.getX() == x && ghost.getY() == y;
     }
 
     public void deactivate() {

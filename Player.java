@@ -1,6 +1,5 @@
 //Amber and Dom Ketchens
 //Project 4: Maze Game - Player
-
 import java.util.ArrayList;
 
 public class Player {
@@ -12,7 +11,7 @@ public class Player {
     private static String image;
 
     // players food/health counter
-    private static int foodCounter = 300; // Set initial food counter to 100
+    private static int foodCounter = 100; // Set initial food counter to 100
     private static boolean playerMoved = false; // tracks if player moved
 
     // players starting position & image
@@ -21,9 +20,6 @@ public class Player {
         Player.y = y;
         image = "Assets/player-front-idle.png";
     }
-
-    //SFX
-    private static Music bulletSFX; //Play sfx for bullets
 
     // Bullet
     private static ArrayList<Bullet> bullets = new ArrayList<>(); // Array list object, stored dynamically
@@ -38,8 +34,6 @@ public class Player {
 
     // Updates player's position/image based on input
     public static void update() {
-        bulletSFX = new Music("Assets/bullet-sfx.wav");
-
         boolean moved = false; // Checks if player moved
         if (StdDraw.hasNextKeyTyped()) {
             char key = StdDraw.nextKeyTyped();
@@ -60,7 +54,6 @@ public class Player {
             } else if (key == ' ') { // Press spacebar to shoot bullet
                 Bullet newBullet = new Bullet(x, y, directionFacing);
                 bullets.add(newBullet);
-                bulletSFX.play();
             }
         }
 
@@ -72,7 +65,7 @@ public class Player {
         // Set playerMoved to true if the player has moved
         playerMoved = moved;
     }
-
+    // updates bullet position
     public static void updateBullets(ArrayList<Ghost> ghosts) {
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
@@ -81,8 +74,9 @@ public class Player {
             // Check for collisions with the ghosts
             for (Ghost ghost : ghosts) {
                 if (bullet.collidesWith(ghost)) {
-                    ghost.hex(); // Change the ghost to a hexed state
+                    ghost.hex(); // calls for hex on the instance of ghost
                     bullet.deactivate(); // Deactivate the bullet after hitting
+                    break; // stops checking once bullet hits ghost
                 }
             }
 
@@ -123,5 +117,18 @@ public class Player {
     // Get method checks if player has moved in the current update
     public static boolean hasMoved() {
         return playerMoved;
+    }
+    // Check for collision with a ghost
+    public static void checkForGhostCollision(ArrayList<Ghost> ghosts) {
+        for (Ghost ghost : ghosts) {
+            if (x == ghost.getX() && y == ghost.getY()) {
+                // If the ghost is not hexed, trigger game over
+                if (!ghost.isHexed()) {
+                    // Only trigger game over if the ghost is not hexed
+                    MazeGame.setGameOver(true); // End the game if player collides with a normal ghost
+                }
+                // If the ghost is hexed, do nothing (no game over or damage)
+            }
+        }
     }
 }
